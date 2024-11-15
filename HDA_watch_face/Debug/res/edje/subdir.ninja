@@ -1,0 +1,9 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+
+edctool = edje_cc
+edcflags = -id "C:/Users/tet50/Downloads/HDA_watch_face-main/edje/images" -id "C:/tizen-studio/tools/edc-editor/share/enventor/images" -sd "C:/Users/tet50/Downloads/HDA_watch_face-main/edje/sounds" -sd "C:/tizen-studio/tools/edc-editor/share/enventor/sounds" -fd "C:/Users/tet50/Downloads/HDA_watch_face-main/edje/fonts" -fd "C:/tizen-studio/tools/edc-editor/share/enventor/fonts"
+
+build res/edje/main.edj: build_edc ../res/edje/main.edc 
