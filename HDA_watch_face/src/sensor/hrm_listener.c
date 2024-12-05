@@ -161,7 +161,7 @@ int GetTimeT(int year, int month, int day, int hour, int minute, int second) {
 void hrm_sensor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], void *user_data) {
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min, sec);
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min, sec);
 
 	int value = (int) events[0].values[0];
 	dlog_print(DLOG_INFO, HRM_SENSOR_LOG_TAG,
@@ -195,7 +195,7 @@ void hrm_led_green_sensor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], void *user_data) {
 
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min,
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min,
 			sec);
 
 	int value = (int) events[0].values[0];

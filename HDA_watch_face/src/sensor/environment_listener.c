@@ -219,7 +219,7 @@ bool set_light_sensor_listener_event_callback() {
 
 bool set_pedometer_listener_event_callback() {
 	int retval;
-	retval = sensor_listener_set_event_cb(pedometer_listener_handle, 0, pedometer_listener_event_callback, NULL);
+	retval = sensor_listener_set_event_cb(pedometer_listener_handle, environment_sensor_listener_event_update_interval_ms, pedometer_listener_event_callback, NULL);
 
 	if (retval != SENSOR_ERROR_NONE) {
 		dlog_print(DLOG_INFO, PEDOMETER_LOG_TAG,
@@ -247,7 +247,7 @@ bool set_pressure_sensor_listener_event_callback() {
 
 bool set_sleep_monitor_listener_event_callback() {
 	int retval;
-	retval = sensor_listener_set_event_cb(sleep_monitor_listener_handle, 0, sleep_monitor_listener_event_callback, NULL);
+	retval = sensor_listener_set_event_cb(sleep_monitor_listener_handle, environment_sensor_listener_event_update_interval_ms, sleep_monitor_listener_event_callback, NULL);
 
 	if (retval != SENSOR_ERROR_NONE) {
 		dlog_print(DLOG_INFO, SLEEP_MONITOR_LOG_TAG,
@@ -263,7 +263,7 @@ void light_sensor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], int events_count, void *user_data) {
 
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min,
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min,
 			sec);
 
 	dlog_print(DLOG_INFO, LIGHT_SENSOR_LOG_TAG,
@@ -277,21 +277,13 @@ void light_sensor_listener_event_callback(sensor_h sensor,
 			//"Light output value = (%s, %llu, %f)\n",
 			"3,%s,%.0f\n", date_buf, events[0].values[0]);
 	append_file(filepath, msg_data);
-
-	for (int i = 0; i < events_count; i++) {
-		float light_level = events[i].values[0];
-
-		dlog_print(DLOG_INFO, ACCELEROMETER_SENSOR_LOG_TAG,
-				"%s/%s/%d: Function sensor_events_callback() output value = %f",
-				__FILE__, __func__, __LINE__, light_level);
-	}
 }
 
 void pedometer_listener_event_callback(sensor_h sensor, sensor_event_s events[],
 		int events_count, void *user_data) {
 
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min, sec);
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min, sec);
 
 	char * state;
 
@@ -323,7 +315,7 @@ void pressure_sensor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], int events_count, void *user_data) {
 
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min,
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min,
 			sec);
 
 	char * filepath = get_write_filepath("hda_sensor_data.txt");
@@ -338,8 +330,7 @@ void sleep_monitor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], int events_count, void *user_data) {
 
 	char date_buf[64];
-	snprintf(date_buf, 64, "%d-%d-%d %d:%d:%d", year, month, day, hour, min,
-			sec);
+	snprintf(date_buf, 64, "%d-%d %d:%d:%d", month, day, hour, min, sec);
 
 	char * state;
 	sensor_sleep_state_e sleep_state = events[0].values[0];

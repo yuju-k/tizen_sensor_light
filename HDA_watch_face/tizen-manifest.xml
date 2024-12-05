@@ -3,16 +3,14 @@
     <profile name="wearable"/>
     <watch-application ambient-support="true" appid="org.example.hda_watch_face" exec="hda_watch_face">
         <label>hda_watch_face</label>
-        <icon>hda_watch_face.png</icon>
+        <icon>muscle-pain.png</icon>
     </watch-application>
     <privileges>
         <privilege>http://tizen.org/privilege/mediastorage</privilege>
         <privilege>http://tizen.org/privilege/systemmonitor</privilege>
         <privilege>http://tizen.org/privilege/healthinfo</privilege>
         <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
-        <privilege>http://tizen.org/privilege/bluetooth</privilege>
         <privilege>http://tizen.org/privilege/haptic</privilege>
-        <privilege>http://tizen.org/privilege/alarm.set</privilege>
         <privilege>http://tizen.org/privilege/display</privilege>
         <privilege>http://tizen.org/privilege/content.write</privilege>
     </privileges>

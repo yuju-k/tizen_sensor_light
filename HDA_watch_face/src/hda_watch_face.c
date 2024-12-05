@@ -79,12 +79,10 @@ typedef struct appdata {
 	Evas_Object *text_btn_postpone_90;
 } appdata_s;
 
-static void pushed_down_active(void *user_data, Evas* e, Evas_Object *obj,
-		void *event_info);
-static void pushed_up_active(void *user_data, Evas* e, Evas_Object *obj,
-		void *event_info);
-static Eina_Bool pushed_down_active_animate(void *user_data);
-static Eina_Bool pushed_up_active_animate(void *user_data);
+//static void pushed_down_active(void *user_data, Evas* e, Evas_Object *obj, void *event_info);
+//static void pushed_up_active(void *user_data, Evas* e, Evas_Object *obj, void *event_info);
+//static Eina_Bool pushed_down_active_animate(void *user_data);
+//static Eina_Bool pushed_up_active_animate(void *user_data);
 
 static void pushed_down_report(void *user_data, Evas* e, Evas_Object *obj,
 		void *event_info);
@@ -152,8 +150,8 @@ bool initialize_pedometer();
 bool initialize_pressure_sensor();
 bool initialize_sleep_monitor();
 
-static void _encore_thread_active_long_press(void *data, Ecore_Thread *thread);
-static void _set_active_color(void *data, Ecore_Thread *thread, void *msgdata);
+//static void _encore_thread_active_long_press(void *data, Ecore_Thread *thread);
+//static void _set_active_color(void *data, Ecore_Thread *thread, void *msgdata);
 static void _encore_thread_update_date(void *data, Ecore_Thread *thread);
 static void _set_alert_visible(void *data, Ecore_Thread *thread, void *msgdata);
 //static void _encore_thread_check_wear(void*date, Ecore_Thread *thread);
@@ -223,7 +221,7 @@ static void update_watch(appdata_s *ad, watch_time_h watch_time, int ambient) {
 	watch_time_get_second(watch_time, &second);
 	if (!ambient) {
 		snprintf(watch_text, TEXT_BUF_SIZE,
-				"<align=center>%s<br/><font_size=55>%02d:%02d:%02d</align>", temp_watch_text, hour24, minute, second);
+				"<align=center><font_size=25>%s</font><br/><font_size=55>%02d:%02d:%02d</align>", temp_watch_text, hour24, minute, second);
 	} else {
 		snprintf(watch_text, TEXT_BUF_SIZE,
 				"<align=center> <br/><font_size=55>%02d:%02d</align>", hour24, minute);
@@ -262,28 +260,35 @@ static void create_base_gui(appdata_s *ad, int width, int height) {
 
 	// 활성화 버튼
 	ad->btn_active = evas_object_rectangle_add(ad->basic_screen);
-	evas_object_color_set(ad->btn_active, 0, 0, 0, 255);
+	evas_object_color_set(ad->btn_active, 0, 0, 0, 255); //검정
 	elm_grid_pack(ad->basic_screen, ad->btn_active, 0, 50, 50, 50);
 	evas_object_show(ad->btn_active);
+
+	// 방해금지 텍스트
 	ad->text_btn_active = elm_label_add(ad->basic_screen);
 	evas_object_color_set(ad->text_btn_active, 255, 255, 255, 255);
 	elm_object_text_set(ad->text_btn_active,
 			"<align=center><font_size=30><b>방해금지</b></font></align>");
 	elm_grid_pack(ad->basic_screen, ad->text_btn_active, 0, 65, 50, 10);
 	evas_object_show(ad->text_btn_active);
-	evas_object_event_callback_add(ad->btn_active, EVAS_CALLBACK_MOUSE_DOWN,
-			pushed_down_active, ad);
-	evas_object_event_callback_add(ad->btn_active, EVAS_CALLBACK_MOUSE_UP,
-			pushed_up_active, ad);
-	evas_object_event_callback_add(ad->text_btn_active,
-			EVAS_CALLBACK_MOUSE_DOWN, pushed_down_active, ad);
-	evas_object_event_callback_add(ad->text_btn_active, EVAS_CALLBACK_MOUSE_UP,
-			pushed_up_active, ad);
+
+	// 방해 금지 버튼 이벤트 핸들러
+//	evas_object_event_callback_add(ad->btn_active, EVAS_CALLBACK_MOUSE_DOWN,
+//			pushed_down_active, ad);
+//	evas_object_event_callback_add(ad->btn_active, EVAS_CALLBACK_MOUSE_UP,
+//			pushed_up_active, ad);
+//	evas_object_event_callback_add(ad->text_btn_active,
+//			EVAS_CALLBACK_MOUSE_DOWN, pushed_down_active, ad);
+//	evas_object_event_callback_add(ad->text_btn_active, EVAS_CALLBACK_MOUSE_UP,
+//			pushed_up_active, ad);
 
 	// 기록 버튼
 	ad->btn_report = evas_object_rectangle_add(ad->basic_screen);
+
+	// 통증 기록 버튼 위치
 	evas_object_color_set(ad->btn_report, 0, 0, 0, 255);
 	elm_grid_pack(ad->basic_screen, ad->btn_report, 50, 50, 50, 50);
+
 	evas_object_show(ad->btn_report);
 	ad->text_btn_report = elm_label_add(ad->basic_screen);
 	evas_object_color_set(ad->text_btn_report, 255, 255, 255, 255);
@@ -444,7 +449,7 @@ static void app_resume(void *data) {
 	feedback_initialize();
 	s_info.smooth_tick = false;
 
-	appdata_s *ad = data;
+	//appdata_s *ad = data;
 	if (!check_and_request_sensor_permission()) {
 		dlog_print(DLOG_ERROR, HRM_SENSOR_LOG_TAG,
 				"Failed to check if an application has permission to use the sensor privilege.");
@@ -456,35 +461,6 @@ static void app_resume(void *data) {
 static void app_terminate(void *data) {
 	feedback_deinitialize();
 	view_destroy_base_gui();
-
-	int retval;
-
-	if (check_hrm_sensor_listener_is_created()) {
-		if (!destroy_hrm_sensor_listener())
-			dlog_print(DLOG_ERROR, HRM_SENSOR_LOG_TAG,
-					"Failed to release all the resources allocated for a HRM sensor listener.");
-		else
-			dlog_print(DLOG_INFO, HRM_SENSOR_LOG_TAG,
-					"Succeeded in releasing all the resources allocated for a HRM sensor listener.");
-	}
-
-	if (check_physics_sensor_listener_is_created()) {
-		if (!destroy_physics_sensor_listener())
-			dlog_print(DLOG_ERROR, PHYSICS_SENSOR_LOG_TAG,
-					"Failed to release all the resources allocated for a Physics sensor listener.");
-		else
-			dlog_print(DLOG_INFO, PHYSICS_SENSOR_LOG_TAG,
-					"Succeeded in releasing all the resources allocated for a Physics sensor listener.");
-	}
-
-	if (check_environment_sensor_listener_is_created()) {
-		if (!destroy_environment_sensor_listener())
-			dlog_print(DLOG_ERROR, ENVIRONMENT_SENSOR_LOG_TAG,
-					"Failed to release all the resources allocated for a Environment sensor listener.");
-		else
-			dlog_print(DLOG_INFO, ENVIRONMENT_SENSOR_LOG_TAG,
-					"Succeeded in releasing all the resources allocated for a Environment sensor listener.");
-	}
 }
 
 static void app_time_tick(watch_time_h watch_time, void *data) {
@@ -550,54 +526,54 @@ int main(int argc, char *argv[]) {
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-static void pushed_down_active(void *user_data, Evas* e, Evas_Object *obj,
-		void *event_info) {
-	appdata_s *ad = user_data;
-	active_state = 1;
-	ecore_animator_add(pushed_down_active_animate, ad);
-}
-static void pushed_up_active(void *user_data, Evas* e, Evas_Object *obj,
-		void *event_info) {
-	appdata_s *ad = user_data;
-	active_state = 0;
-	feedback_play(FEEDBACK_PATTERN_VIBRATION_ON);
-	if (alert_active_flag == true) {
-		alert_active_flag = false;
-	} else {
-		alert_active_flag = true;
-		final_report_year = year;
-		final_report_month = month;
-		final_report_day = day;
-		final_report_hour = hour;
-		final_report_min = min;
-		final_report_sec = sec;
-	}
-	ecore_animator_add(pushed_up_active_animate, ad);
-}
-static Eina_Bool pushed_down_active_animate(void *user_data) {
-	appdata_s *ad = user_data;
-	evas_object_color_set(ad->btn_active, 60, 60, 60, 255);
-	return ECORE_CALLBACK_RENEW;
-}
-static Eina_Bool pushed_up_active_animate(void *user_data) {
-	appdata_s *ad = user_data;
-	if (alert_active_flag == true) {
-		evas_object_color_set(ad->btn_active, 0, 0, 0, 255);
-	} else {
-		evas_object_color_set(ad->btn_active, 238, 36, 36, 255);
-	}
-	return ECORE_CALLBACK_RENEW;
-}
+//static void pushed_down_active(void *user_data, Evas* e, Evas_Object *obj,
+//		void *event_info) {
+//	appdata_s *ad = user_data;
+//	active_state = 1;
+//	ecore_animator_add(pushed_down_active_animate, ad);
+//}
+//static void pushed_up_active(void *user_data, Evas* e, Evas_Object *obj,
+//		void *event_info) {
+//	appdata_s *ad = user_data;
+//	active_state = 0;
+//	feedback_play(FEEDBACK_PATTERN_VIBRATION_ON);
+//	if (alert_active_flag == true) {
+//		alert_active_flag = false;
+//	} else {
+//		alert_active_flag = true;
+//		final_report_year = year;
+//		final_report_month = month;
+//		final_report_day = day;
+//		final_report_hour = hour;
+//		final_report_min = min;
+//		final_report_sec = sec;
+//	}
+//	ecore_animator_add(pushed_up_active_animate, ad);
+//}
+//static Eina_Bool pushed_down_active_animate(void *user_data) {
+//	appdata_s *ad = user_data;
+//	evas_object_color_set(ad->btn_active, 60, 60, 60, 255);
+//	return ECORE_CALLBACK_RENEW;
+//}
+//static Eina_Bool pushed_up_active_animate(void *user_data) {
+//	appdata_s *ad = user_data;
+//	if (alert_active_flag == true) {
+//		evas_object_color_set(ad->btn_active, 0, 0, 0, 255);
+//	} else {
+//		evas_object_color_set(ad->btn_active, 238, 36, 36, 255);
+//	}
+//	return ECORE_CALLBACK_RENEW;
+//}
 
-static void _set_active_color(void *data, Ecore_Thread *thread, void *msgdata) {
-	appdata_s *ad = data;
-	int flag = (int) msgdata;
-	if (flag == 0) {
-		evas_object_color_set(ad->btn_active, 0, 0, 0, 255);
-	} else if (flag == 1) {
-		evas_object_color_set(ad->btn_active, 207, 0, 0, 255);
-	}
-}
+//static void _set_active_color(void *data, Ecore_Thread *thread, void *msgdata) {
+//	appdata_s *ad = data;
+//	int flag = (int) msgdata;
+//	if (flag == 0) {
+//		evas_object_color_set(ad->btn_active, 0, 0, 0, 255);
+//	} else if (flag == 1) {
+//		evas_object_color_set(ad->btn_active, 207, 0, 0, 255);
+//	}
+//}
 
 //static void _encore_thread_active_long_press(void *data, Ecore_Thread *thread) {
 //	appdata_s *ad = data;
@@ -739,7 +715,7 @@ static Eina_Bool pushed_up_postpone_90_animate(void *user_data) {
 ///////////////////////////////////////////////////////////////////////////
 
 static void _encore_thread_update_date(void *data, Ecore_Thread *thread) {
-	appdata_s *ad = data;
+	//appdata_s *ad = data;
 
 	int alert_repeat = 0;
 	while (1) {
@@ -870,7 +846,7 @@ static void _set_alert_visible(void *data, Ecore_Thread *thread, void *msgdata) 
 		evas_object_show(ad->alert_screen);
 	} else if (flag == 5) {
 //		evas_object_color_set(ad->btn_report, 96, 193, 162, 255);
-		snprintf(temp_watch_text, 32, "%s", "현재 통증 입력을 해주세요.");
+		snprintf(temp_watch_text, 32, "%s", "통증 기록 알람");
 	}
 }
 

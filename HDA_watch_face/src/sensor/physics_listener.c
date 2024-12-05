@@ -8,7 +8,7 @@ sensor_listener_h gravity_sensor_listener_handle = 0;
 sensor_listener_h gyroscope_rotation_vector_sensor_listener_handle = 0;
 sensor_listener_h gyroscope_sensor_listener_handle = 0;
 sensor_listener_h linear_acceleration_sensor_listener_handle = 0;
-unsigned int physics_sensor_listener_event_update_interval_ms = 50;
+unsigned int physics_sensor_listener_event_update_interval_ms = 1000;
 
 static void accelerometer_sensor_listener_event_callback(sensor_h sensor,
 		sensor_event_s events[], int events_count, void *user_data);
@@ -366,8 +366,16 @@ void accelerometer_sensor_listener_event_callback(sensor_h sensor,
 	timeinfo = localtime(&seconds);
 
 	// 변환된 날짜와 시간 저장 (밀리초 포함)
-	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
-			 timeinfo->tm_year + 1900,
+//	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
+//			 timeinfo->tm_year + 1900,
+//			 timeinfo->tm_mon + 1,
+//			 timeinfo->tm_mday,
+//			 timeinfo->tm_hour,
+//			 timeinfo->tm_min,
+//			 timeinfo->tm_sec,
+//			 milliseconds);
+
+	snprintf(timestamp_date_buf, 64, "%02d-%02d %02d:%02d:%02d.%03lu",
 			 timeinfo->tm_mon + 1,
 			 timeinfo->tm_mday,
 			 timeinfo->tm_hour,
@@ -382,11 +390,11 @@ void accelerometer_sensor_listener_event_callback(sensor_h sensor,
              timestamp_date_buf, events[0].values[0], events[0].values[1], events[0].values[2]);
     append_file(filepath, msg_data);
 
-    for (int i = 1; i < events_count; i++) {
-        float x = events[i].values[0];
-        float y = events[i].values[1];
-        float z = events[i].values[2];
-    }
+//    for (int i = 1; i < events_count; i++) {
+//        float x = events[i].values[0];
+//        float y = events[i].values[1];
+//        float z = events[i].values[2];
+//    }
 }
 
 //void gravity_sensor_listener_event_callback(sensor_h sensor,
@@ -431,8 +439,16 @@ void gravity_sensor_listener_event_callback(sensor_h sensor,
 	timeinfo = localtime(&seconds);
 
 	// 변환된 날짜와 시간 저장 (밀리초 포함)
-	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
-			 timeinfo->tm_year + 1900,
+//	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
+//			 timeinfo->tm_year + 1900,
+//			 timeinfo->tm_mon + 1,
+//			 timeinfo->tm_mday,
+//			 timeinfo->tm_hour,
+//			 timeinfo->tm_min,
+//			 timeinfo->tm_sec,
+//			 milliseconds);
+
+	snprintf(timestamp_date_buf, 64, "%02d-%02d %02d:%02d:%02d.%03lu",
 			 timeinfo->tm_mon + 1,
 			 timeinfo->tm_mday,
 			 timeinfo->tm_hour,
@@ -447,14 +463,6 @@ void gravity_sensor_listener_event_callback(sensor_h sensor,
 			"7,%s,%f,%f,%f\n",
 			timestamp_date_buf, events[0].values[0], events[0].values[1], events[0].values[2]);
 	append_file(filepath, msg_data);
-
-	for (int i = 1; i < events_count; i++) {
-		//unsigned long long timestamp = events[i].timestamp;
-		//int accuracy = events[i].accuracy;
-		float x = events[i].values[0];
-		float y = events[i].values[1];
-		float z = events[i].values[2];
-	}
 }
 
 //void gyroscope_rotation_vector_sensor_listener_event_callback(sensor_h sensor,
@@ -500,8 +508,16 @@ void gyroscope_rotation_vector_sensor_listener_event_callback(sensor_h sensor,
 	timeinfo = localtime(&seconds);
 
 	// 변환된 날짜와 시간 저장 (밀리초 포함)
-	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
-			 timeinfo->tm_year + 1900,
+//	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
+//			 timeinfo->tm_year + 1900,
+//			 timeinfo->tm_mon + 1,
+//			 timeinfo->tm_mday,
+//			 timeinfo->tm_hour,
+//			 timeinfo->tm_min,
+//			 timeinfo->tm_sec,
+//			 milliseconds);
+
+	snprintf(timestamp_date_buf, 64, "%02d-%02d %02d:%02d:%02d.%03lu",
 			 timeinfo->tm_mon + 1,
 			 timeinfo->tm_mday,
 			 timeinfo->tm_hour,
@@ -517,14 +533,14 @@ void gyroscope_rotation_vector_sensor_listener_event_callback(sensor_h sensor,
 			timestamp_date_buf, events[0].accuracy, events[0].values[0], events[0].values[1], events[0].values[2],events[0].values[3]);
 	append_file(filepath, msg_data);
 
-	for (int i = 1; i < events_count; i++) {
-		//unsigned long long timestamp = events[i].timestamp;
-		//int accuracy = events[i].accuracy;
-		float x = events[i].values[0];
-		float y = events[i].values[1];
-		float z = events[i].values[2];
-		float w = events[i].values[3];
-	}
+//	for (int i = 1; i < events_count; i++) {
+//		//unsigned long long timestamp = events[i].timestamp;
+//		//int accuracy = events[i].accuracy;
+//		float x = events[i].values[0];
+//		float y = events[i].values[1];
+//		float z = events[i].values[2];
+//		float w = events[i].values[3];
+//	}
 }
 
 //void gyroscope_sensor_listener_event_callback(sensor_h sensor,
@@ -569,8 +585,16 @@ void gyroscope_sensor_listener_event_callback(sensor_h sensor,
 	timeinfo = localtime(&seconds);
 
 	// 변환된 날짜와 시간 저장 (밀리초 포함)
-	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
-			 timeinfo->tm_year + 1900,
+//	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
+//			 timeinfo->tm_year + 1900,
+//			 timeinfo->tm_mon + 1,
+//			 timeinfo->tm_mday,
+//			 timeinfo->tm_hour,
+//			 timeinfo->tm_min,
+//			 timeinfo->tm_sec,
+//			 milliseconds);
+
+	snprintf(timestamp_date_buf, 64, "%02d-%02d %02d:%02d:%02d.%03lu",
 			 timeinfo->tm_mon + 1,
 			 timeinfo->tm_mday,
 			 timeinfo->tm_hour,
@@ -586,13 +610,13 @@ void gyroscope_sensor_listener_event_callback(sensor_h sensor,
 			timestamp_date_buf, events[0].values[0], events[0].values[1], events[0].values[2]);
 	append_file(filepath, msg_data);
 
-	for (int i = 1; i < events_count; i++) {
-		//unsigned long long timestamp = events[i].timestamp;
-		//int accuracy = events[i].accuracy;
-		float x = events[i].values[0];
-		float y = events[i].values[1];
-		float z = events[i].values[2];
-	}
+//	for (int i = 1; i < events_count; i++) {
+//		//unsigned long long timestamp = events[i].timestamp;
+//		//int accuracy = events[i].accuracy;
+//		float x = events[i].values[0];
+//		float y = events[i].values[1];
+//		float z = events[i].values[2];
+//	}
 }
 
 //void linear_acceleration_sensor_listener_event_callback(sensor_h sensor,
@@ -637,8 +661,16 @@ void linear_acceleration_sensor_listener_event_callback(sensor_h sensor,
 	timeinfo = localtime(&seconds);
 
 	// 변환된 날짜와 시간 저장 (밀리초 포함)
-	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
-			 timeinfo->tm_year + 1900,
+//	snprintf(timestamp_date_buf, 64, "%04d-%02d-%02d %02d:%02d:%02d.%03lu",
+//			 timeinfo->tm_year + 1900,
+//			 timeinfo->tm_mon + 1,
+//			 timeinfo->tm_mday,
+//			 timeinfo->tm_hour,
+//			 timeinfo->tm_min,
+//			 timeinfo->tm_sec,
+//			 milliseconds);
+
+	snprintf(timestamp_date_buf, 64, "%02d-%02d %02d:%02d:%02d.%03lu",
 			 timeinfo->tm_mon + 1,
 			 timeinfo->tm_mday,
 			 timeinfo->tm_hour,
@@ -653,14 +685,6 @@ void linear_acceleration_sensor_listener_event_callback(sensor_h sensor,
 			"10,%s,%f,%f,%f\n",
 			timestamp_date_buf, events[0].values[0], events[0].values[1], events[0].values[2]);
 	append_file(filepath, msg_data);
-
-	for (int i = 1; i < events_count; i++) {
-		//unsigned long long timestamp = events[i].timestamp;
-		//int accuracy = events[i].accuracy;
-		float x = events[i].values[0];
-		float y = events[i].values[1];
-		float z = events[i].values[2];
-	}
 }
 
 /////////// Setting sensor listener event callback ///////////
